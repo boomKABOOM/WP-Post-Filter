@@ -7,40 +7,6 @@
  * Author URI: http://www.boomkaboom.com
  */
 
-// filters
-
-// count
-// 'posts_per_page'   => 100,
-//
-// post type
-// 'post_type'        => 'post',
-//
-// category
-// 'category' 	  => 12, //id of businesses
-// exclude category
-// 'category__not_in' 	  => 12, //id of businesses
-//
-// tags
-// 'tag'           => 'featured',
-// exclude tag
-// 'tag__not_in'      => 3, //id of tag 'featured'
-//
-// name - AZ
-// 'orderby'          => 'title',
-// 'order'            => 'DESC'
-// name - ZA
-// 'orderby'          => 'title',
-// 'order'            => 'ASC'
-//
-// date - oldest
-// 'orderby'          => 'date',
-// 'order'            => 'DESC'
-// date - newest
-// 'orderby'          => 'date',
-// 'order'            => 'ASC'
-//grid-size
-
-
 function bmkbm_filter( $bmkbm_args ) {
 
 //   $bmkbm_args = array(
@@ -88,8 +54,10 @@ BUTTONS;
 }
 add_shortcode( 'bmkbm-filter', 'bmkbm_filter' );
 
-//add script to footer
-wp_enqueue_script('main', plugin_dir_url(__FILE__) . 'main.js', '', '', true);
-
+//add ajax script to footer
+wp_enqueue_script('main_js', plugin_dir_url(__FILE__) . 'main.js', '', '', true);
+wp_localize_script('main_js', 'bmkbmData', array(
+  'siteURL' => get_site_url()
+));
 
 ?>
