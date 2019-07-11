@@ -17,39 +17,40 @@
   ?filter[s]=content%20text%20only
 */
 
-let categoriesData = ''
-let tagsData = ''
+const wprest_route = '/wp-json/wp/v2/';
+let categoriesData, tagsData
+getData('categories');
+getData('tags');
 
-//custom get posts
-function ajaxRequest(rest_api_endpoint, data_type){
+function returnData(theData){
+  return theData;
+  console.log('theData = '+theData);
+}
+
+//ajax request
+function getData(wprest_endpoint){
   let ourRequest = new XMLHttpRequest();
-  ourRequest.open('GET', bmkbmData.siteURL + rest_api_endpoint);
+  let data = '';
+  ourRequest.open('GET', bmkbmData.siteURL + wprest_route + wprest_endpoint);
   ourRequest.onload = function() {
     if (ourRequest.status >= 200 && ourRequest.status < 400) {
-      var data = JSON.parse(ourRequest.responseText);
-      switch(data_type) {
-        case 'posts':
-          createHTML(data)
+      data = JSON.parse(ourRequest.responseText);
+      returnData(data);
+      console.log('onload');
+      switch (wprest_endpoint){
+        case 'tags':
+          tagsData = data;
           break;
         case 'categories':
           categoriesData = data;
-          console.log('categories initialized')
-          console.log(categoriesData);
-          break;
-        case 'tags':
-          tagsData = data;
-          console.log('tags initialized')
-          console.log(tagsData);
           break;
         default:
-          console.log('invalid type')
+          createHTML(data);
       }
-
-      window.data_var = data;
     } else {
       console.log("We connected to the server, but it returned an error.");
     }
-  };
+  }
 
   ourRequest.onerror = function() {
     console.log("Connection error");
@@ -58,9 +59,6 @@ function ajaxRequest(rest_api_endpoint, data_type){
   ourRequest.send();
 }
 
-console.log('init');
-ajaxRequest('/wp-json/wp/v2/categories', 'categories');
-ajaxRequest('/wp-json/wp/v2/tags', 'tags');
 
 
 
@@ -70,9 +68,13 @@ const portfolioPostsContainer = document.getElementById("portfolio-posts-contain
 
 if(portfolioPostsBtn){
   portfolioPostsBtn.addEventListener("click",function(){
-    ajaxRequest('/wp-json/wp/v2/posts?_embed', 'posts');
+    getData('posts?_embed&per_page=3');
+    console.log(categoriesData);
+    console.log(tagsData);
   });
 }
+
+
 
 function createHTML(postsData){
   let ourHTMLString = '';
@@ -81,6 +83,7 @@ function createHTML(postsData){
     if(i%3 == 0){
       ourHTMLString += `<div class="row unspace">`
     }
+
     ourHTMLString +=`<article class="col">
       <div class="post--med">
         <a href="`+ postsData[i].link +`" class="image">
@@ -90,11 +93,22 @@ function createHTML(postsData){
           <a href="`+ postsData[i].link +`" class="title">
             <h3>`+ postsData[i].title.rendered +`</h3>
           </a>
-          <div class="tags">
+          <div class="tags">`
+          let tags = postsData[i].tags;
+          //loop through tag ids
+          for(let i = 0; i < tags.length; i++){
+            //loop through tagData to match ids and print details
+            for(let ii = 0; ii < tagsData.length; ii++){
+              if(tagsData[ii].id == tags[i]){
+                ourHTMLString += `<a href="`+ tagsData[ii].link +`">`+ tagsData[ii].name +`</a>`
+              }
+            }
+          }
+          ourHTMLString +=`
             <?php $posttags = get_the_tags();
             if ($posttags) {
               foreach($posttags as $tag) {
-                echo '<a href="'.$tag->slug.'">'.$tag->name.'</a>';
+                echo ';
               }
             } ?>
           </div>
