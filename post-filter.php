@@ -46,18 +46,28 @@ function bmkbm_filter( $bmkbm_args ) {
 //
 //   wp_reset_postdata();
 
-  echo <<< BUTTONS
+  echo <<< INITFIELDS
   <button type="button" id="portfolio-posts-btn" name="button">load posts</button>
   <div id="portfolio-posts-container"></div>
-BUTTONS;
-
+  <div class="loading">
+    <div></div><div></div><div></div>
+  </div>
+INITFIELDS;
 }
 add_shortcode( 'bmkbm-filter', 'bmkbm_filter' );
 
-//add ajax script to footer
-wp_enqueue_script('main_js', plugin_dir_url(__FILE__) . 'main.js', '', '', true);
-wp_localize_script('main_js', 'bmkbmData', array(
-  'siteURL' => get_site_url()
-));
+// Register style + js
+add_action( 'wp_enqueue_scripts', 'register_plugin' );
+function register_plugin() {
+  //styles
+	wp_register_style( 'bmkbm-filter', plugins_url( 'WP-Post-Filter/css/styles.css' ) );
+	wp_enqueue_style( 'bmkbm-filter' );
+
+  //add ajax script to footer
+  wp_enqueue_script('main_js', plugin_dir_url(__FILE__) . 'main.js', '', '', true);
+  wp_localize_script('main_js', 'bmkbmData', array(
+    'siteURL' => get_site_url()
+  ));
+}
 
 ?>

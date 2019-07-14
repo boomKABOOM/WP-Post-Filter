@@ -119,6 +119,5 @@ function createHTML(postsData){
       ourHTMLString += `</div>`
     }
   }
-
   portfolioPostsContainer.innerHTML = ourHTMLString;
 }
