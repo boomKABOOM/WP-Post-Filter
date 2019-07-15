@@ -1,0 +1,90 @@
+.bmkbm-content{
+  margin: 1em 0;
+  position: relative;
+}
+
+.code{
+  font-family: monospace;
+  font-size: 14px;
+  border: 1px solid #000;
+  background: rgba(0,0,0,.1);
+  padding: .5em;
+}
+
+.bmkbm-btn{
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+  font-family: brandon-grotesque, sans-serif;
+  color: #586261;
+  display: inline-block;
+  padding: .5em 2em;
+  font-size: 16px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  border: 1px solid #586261;
+  background: rgba(0, 0, 0, 0);
+  margin: 0 !important;
+}
+
+.bmkbm-btn:hover {
+  background: rgba(0,0,0,0.15);
+}
+
+label{
+  display: inline-block;
+  padding: .5em;
+  font-size: 14px;
+}
+
+.loading {
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+  opacity: 0;
+  height: 0;
+  display: inline-block;
+  position: absolute;
+  top:calc(50% - 32px);
+  left:calc(50% - 32px);
+  width: 64px;
+  height: 64px;
+}
+
+.loading.active{
+  opacity:1;
+  height: auto;
+}
+
+.loading div {
+  display: inline-block;
+  position: absolute;
+  left: 6px;
+  width: 13px;
+  background: rgba(0,0,0,.25);
+  animation: loading 1.5s ease infinite;
+}
+.loading div:nth-child(1) {
+  left: 6px;
+  animation-delay: -0.5s;
+}
+.loading div:nth-child(2) {
+  left: 26px;
+  animation-delay: -.25s;
+}
+.loading div:nth-child(3) {
+  left: 45px;
+  animation-delay: 0;
+}
+@keyframes loading {
+  0%, 100% {
+    top: 6px;
+    height: 51px;
+  }
+  50% {
+    top: 19px;
+    height: 26px;
+  }
+}
