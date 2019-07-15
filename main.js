@@ -21,6 +21,7 @@ const wprest_route = '/wp-json/wp/v2/';
 let categoriesData, tagsData
 getData('categories');
 getData('tags');
+let activeEndpoint = 'posts?_embed&per_page=3';
 
 function returnData(theData){
   return theData;
@@ -63,18 +64,34 @@ function getData(wprest_endpoint){
 
 
 //ajax stuff
-const portfolioPostsBtn = document.getElementById("portfolio-posts-btn");
-const portfolioPostsContainer = document.getElementById("portfolio-posts-container");
+const loadPostsBtn = document.getElementById("load-posts-btn");
+const loadedPostsContainer = document.getElementById("loaded-posts-container");
+const loadingAnim = document.getElementById("loading");
+const activeEndpointVal = document.getElementById("active-endpoint");
 
-if(portfolioPostsBtn){
-  portfolioPostsBtn.addEventListener("click",function(){
-    getData('posts?_embed&per_page=3');
+let tagInput = document.getElementsByName("selected-tags");
+let catInput = document.getElementsByName("selected-category")[0].value;
+// const orderInput = document.getElementsByName("order-input")[0].value;
+// const orderbyInput = document.getElementsByName("orderby-input")[0].value;
+
+if(loadPostsBtn){
+  loadPostsBtn.addEventListener("click",function(){
+    loadingAnim.classList.add('active');
+    getData(activeEndpoint);
     console.log(categoriesData);
     console.log(tagsData);
   });
+  updateActiveEndpint();
 }
 
+console.log('test'+tagInput);
+// tagInput.addEventListener("change", updateActiveEndpint);
+// catInput.addEventListener("change", updateActiveEndpint);
 
+function updateActiveEndpint(){
+  console.log(tagInput);
+  activeEndpointVal.innerHTML = wprest_route+activeEndpoint;
+}
 
 function createHTML(postsData){
   let ourHTMLString = '';
@@ -84,8 +101,8 @@ function createHTML(postsData){
       ourHTMLString += `<div class="row unspace">`
     }
 
-    ourHTMLString +=`<article class="col">
-      <div class="post--med">
+    ourHTMLString +=`<div class="col">
+      <div class="card--med">
         <a href="`+ postsData[i].link +`" class="image">
           <img src="`+ postsData[i]._embedded['wp:featuredmedia']['0'].source_url +`" alt="">
         </a>
@@ -114,10 +131,11 @@ function createHTML(postsData){
           </div>
         </div>
       </div>
-    </article>`
+    </div>`
     if(i%3 == 2 || i == postsData.length-1){
       ourHTMLString += `</div>`
     }
   }
-  portfolioPostsContainer.innerHTML = ourHTMLString;
+  loadedPostsContainer.innerHTML = ourHTMLString;
+  loadingAnim.classList.remove('active');
 }

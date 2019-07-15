@@ -9,49 +9,49 @@
 
 function bmkbm_filter( $bmkbm_args ) {
 
-//   $bmkbm_args = array(
-//     'posts_per_page'   => 50,
-//     'orderby'          => 'title',
-//     'order'            => 'DESC',
-//     // 'tag'           => 'featured',
-//     // 'tag__not_in'      => 3, //id of tag 'featured'
-//     // 'category' 	  => 12, //id of businesses
-//     // 'category__not_in' 	  => 12, //id of businesses
-//     // 'post_type'        => 'post',
-//
-//   );
-//
-//   global $post;
-//   $myposts = get_posts( $bmkbm_args );
-//   $i = 0;
-//   $len = count($myposts);
-//
-//   foreach ( $myposts as $post ) : setup_postdata( $post );
-//     $postTitle = get_the_title();
-//     $postPermalink = get_the_permalink();
-//     echo <<< POSTITEM
-//     <div style="border:margin:1em; max-width:350px; display:inline-block;">
-//       <div class="post--med">
-//         <div class="content">
-//           <a href="$postPermalink" class="title">
-//             <h3>$postTitle</h3>
-//           </a>
-//         </div>
-//       </div>
-//     </div>
-// POSTITEM;
-//
-//   $index++;
-//   endforeach;
-//
-//   wp_reset_postdata();
+  echo '<div class="row">';
+    echo '<div class="col-2">';
+
+    echo '<strong>Select Category</strong><br>';
+    echo '<select class="" name="selected-category" id="cat">';
+    echo '<option value="">None</option>';
+    $postcats = get_categories();
+    if ($postcats) {
+      foreach($postcats as $cat) {
+        echo '<option value="'.$cat->term_id.'">'.$cat->name.'</option>';
+      }
+    }
+    echo '</select>';
+
+    echo '<br><strong>Select Tags</strong><br>';
+    $posttags = get_tags();
+    if ($posttags) {
+      foreach($posttags as $tag) {
+        echo '<label><input type="checkbox" name="selected-tags" value="'.$tag->term_id.'"> '.$tag->name.'</label>';
+      }
+    }
+
+    echo '</div>';
+  echo '</div>';
 
   echo <<< INITFIELDS
-  <button type="button" id="portfolio-posts-btn" name="button">load posts</button>
-  <div id="portfolio-posts-container"></div>
-  <div class="loading">
-    <div></div><div></div><div></div>
+
+  <div class="row">
+    <div class="col-2">
+      <button type="button" class="bmkbm-btn" id="load-posts-btn" name="button">load posts</button>
+    </div>
+    <div class="col">
+      <div id="active-endpoint" class="code">...</div>
+    </div>
   </div>
+
+  <div class="bmkbm-content">
+    <div id="loaded-posts-container"></div>
+    <div class="loading inactive" id="loading">
+      <div></div><div></div><div></div>
+    </div>
+  </div>
+
 INITFIELDS;
 }
 add_shortcode( 'bmkbm-filter', 'bmkbm_filter' );
