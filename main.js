@@ -70,7 +70,7 @@ const loadingAnim = document.getElementById("loading");
 const activeEndpointVal = document.getElementById("active-endpoint");
 
 let tagInput = document.getElementsByName("selected-tags");
-let catInput = document.getElementsByName("selected-category")[0].value;
+let catInput = document.getElementsByName("selected-categories");
 // const orderInput = document.getElementsByName("order-input")[0].value;
 // const orderbyInput = document.getElementsByName("orderby-input")[0].value;
 
@@ -81,16 +81,54 @@ if(loadPostsBtn){
     console.log(categoriesData);
     console.log(tagsData);
   });
+  //init defaults if its available
   updateActiveEndpint();
 }
 
-console.log('test'+tagInput);
-// tagInput.addEventListener("change", updateActiveEndpint);
-// catInput.addEventListener("change", updateActiveEndpint);
-
 function updateActiveEndpint(){
-  console.log(tagInput);
+  let baseVal = 'posts';
+  let catVal = '';
+  let embedVal = '?_embed';
+  let tagVal = '';
+  let perPageVal = '&per_page=3';
+  let orderVal = '&order=asc';
+
+  //loop through tags input
+  let activeTagIDs = '';
+  for (let i = 0 ; i < tagInput.length; i++) {
+    if(tagInput[i].checked){
+      activeTagIDs += tagInput[i].value + '+';
+    }
+  }
+  tagVal = '&tags=' + activeTagIDs;
+
+  //loop through categories input
+  let activeCatIDs = '';
+  if(catInput[0].value){
+    for (let i = 0 ; i < catInput.length; i++) {
+      if(catInput[i].checked){
+        activeCatIDs += catInput[i].value + '+';
+      }
+    }
+    catVal = '&categories=' + activeCatIDs;
+  }
+
+  activeEndpoint = baseVal + embedVal+ catVal + tagVal + perPageVal + orderVal;
   activeEndpointVal.innerHTML = wprest_route+activeEndpoint;
+}
+
+// listen for changes to categories select
+for (var i = 0 ; i < catInput.length; i++) {
+ catInput[i].addEventListener('change', function(){
+   updateActiveEndpint();
+ });
+}
+
+// listen for changes to tags checkboxes
+for (var i = 0 ; i < tagInput.length; i++) {
+ tagInput[i].addEventListener('change', function(){
+   updateActiveEndpint();
+ });
 }
 
 function createHTML(postsData){
@@ -122,17 +160,19 @@ function createHTML(postsData){
             }
           }
           ourHTMLString +=`
-            <?php $posttags = get_the_tags();
-            if ($posttags) {
-              foreach($posttags as $tag) {
-                echo ';
-              }
-            } ?>
           </div>
         </div>
       </div>
     </div>`
-    if(i%3 == 2 || i == postsData.length-1){
+    //if last iteration of loop
+    if(i == postsData.length-1){
+      //create empty columns so rows always have 3
+      if(postsData.length%3 != 0){
+        for(let x = 0; x < 3 - (postsData.length%3); x++){
+          ourHTMLString += `<div class="col"></div>`
+        }
+      }
+      //close row
       ourHTMLString += `</div>`
     }
   }

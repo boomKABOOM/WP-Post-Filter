@@ -13,15 +13,12 @@ function bmkbm_filter( $bmkbm_args ) {
     echo '<div class="col-2">';
 
     echo '<strong>Select Category</strong><br>';
-    echo '<select class="" name="selected-category" id="cat">';
-    echo '<option value="">None</option>';
     $postcats = get_categories();
     if ($postcats) {
       foreach($postcats as $cat) {
-        echo '<option value="'.$cat->term_id.'">'.$cat->name.'</option>';
+        echo '<label><input type="checkbox" name="selected-categories" value="'.$cat->term_id.'"> '.$cat->name.'</label>';
       }
     }
-    echo '</select>';
 
     echo '<br><strong>Select Tags</strong><br>';
     $posttags = get_tags();
@@ -29,7 +26,7 @@ function bmkbm_filter( $bmkbm_args ) {
       foreach($posttags as $tag) {
         echo '<label><input type="checkbox" name="selected-tags" value="'.$tag->term_id.'"> '.$tag->name.'</label>';
       }
-    }
+    }    
 
     echo '</div>';
   echo '</div>';
@@ -37,10 +34,10 @@ function bmkbm_filter( $bmkbm_args ) {
   echo <<< INITFIELDS
 
   <div class="row">
-    <div class="col-2">
+    <div class="col">
       <button type="button" class="bmkbm-btn" id="load-posts-btn" name="button">load posts</button>
     </div>
-    <div class="col">
+    <div class="col-2">
       <div id="active-endpoint" class="code">...</div>
     </div>
   </div>
